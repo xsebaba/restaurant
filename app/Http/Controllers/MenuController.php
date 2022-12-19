@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Type;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Session;
 
 class MenuController extends Controller
 {
@@ -15,7 +17,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        //
+        // Displaying menu items is in TypeController to dive items into groups like drinks, starters etc.
     }
 
     /**
@@ -98,5 +100,29 @@ class MenuController extends Controller
         $menu->delete();
     
         return redirect('/menu');
+    }
+
+    public function addToOrder(Request $request, $id){
+        $menu = Menu::find($id);
+        $oldCart = Session::has('cart') ? Session::get('cart') : null;
+        $cart = new Order($oldCart);
+        $cart->add($menu, $menu->id);
+        $request->session()->put('cart', $cart);
+        return redirect('/menu');
+
+    }
+
+    public function getOrder(){
+        if(!Session::has('cart')){
+            return view('/menu.ordercart');
+        }
+    
+        $oldCart = Session::get('cart');
+        $cart = new Order($oldCart);
+        return view('/menu.ordercart',
+             ['orders' => $cart->items, 
+             'totalPrice' => $cart->totalPrice
+            ]);
+
     }
 }

@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TypeController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MenuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +21,12 @@ Route::get('/', function () {
 });
 
 
-Route::get('/menu', 'App\Http\Controllers\TypeController@index');
+Route::get('/menu', [TypeController::class, 'index']);
 
+Route::get('/order/{id}',[MenuController::class, 'addToOrder'] );
 
+Route::get('/ordercard', [MenuController::class, 'getOrder']);
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
