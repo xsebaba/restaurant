@@ -16,13 +16,12 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('menu_id');
-            $table->string('name')->nullable();
+            $table->text('cart');
             $table->string('delivery')->nullable();
+            $table->string('name')->nullable();
             $table->string('tel')->nullable();
-            $table->json('toppings')->nullable();
-            $table->integer('price');
-            $table->boolean('finalized');
+            $table->boolean('payment')->default(false);
+            $table->boolean('finalized')->default(false);   
 
         });
     }

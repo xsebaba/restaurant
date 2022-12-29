@@ -3,7 +3,13 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-      <!--  <div class="col-md-8"> -->
+        @if(Session::has('success'))
+            <div class="col-sm-6 col-md-4 col-md-offset-4 col-sm-offset-3">
+                <div id="class-message" class="alert alert-success">
+                    {{Session::get('success')}}
+                </div>
+            </div>
+        @endif
         
          
             @foreach($types as $type)

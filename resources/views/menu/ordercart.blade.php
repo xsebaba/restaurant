@@ -25,9 +25,9 @@
                             <th scope="col"> {{$order['item']['price']}} USD</th>
                             <th scope="col"> {{$order['qty']}}</th>
                             <th scope="col">
-                                <button type="button" class="btn btn-primary">X
+                                <button type="button" class="btn btn-primary">+
                                 </button>
-                                <button type="button" class="btn btn-primary">X
+                                <button type="button" class="btn btn-primary">-
                                 </button>
                             </th>
                         </tr>
@@ -41,7 +41,9 @@
         <div class="row justify-content-md-center">
             <div class="col-sm-6 col-md-12">
                 <strong> Total Price: {{$totalPrice}} USD</strong>
-                <button type="button" class="btn btn-success">Checkout</button>
+                <a href="payment">
+                    <button type="button" class="btn btn-success">Checkout</button>
+                </a>
             </div>
         </div>
 

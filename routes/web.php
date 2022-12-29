@@ -27,6 +27,9 @@ Route::get('/order/{id}',[MenuController::class, 'addToOrder'] );
 
 Route::get('/ordercard', [MenuController::class, 'getOrder']);
 
+Route::get('/payment', [MenuController::class, 'getCheckout']);
+Route::post('/payment', [MenuController::class, 'postCheckout']);
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');

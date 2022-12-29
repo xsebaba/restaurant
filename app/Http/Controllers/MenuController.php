@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Type;
 use App\Models\Order;
+use App\Models\Meal;
 use Illuminate\Http\Request;
+use Auth;
 use Session;
 
 class MenuController extends Controller
@@ -105,7 +107,7 @@ class MenuController extends Controller
     public function addToOrder(Request $request, $id){
         $menu = Menu::find($id);
         $oldCart = Session::has('cart') ? Session::get('cart') : null;
-        $cart = new Order($oldCart);
+        $cart = new Meal($oldCart);
         $cart->add($menu, $menu->id);
         $request->session()->put('cart', $cart);
         return redirect('/menu');
@@ -118,11 +120,50 @@ class MenuController extends Controller
         }
     
         $oldCart = Session::get('cart');
-        $cart = new Order($oldCart);
+        $cart = new Meal($oldCart);
         return view('/menu.ordercart',
              ['orders' => $cart->items, 
              'totalPrice' => $cart->totalPrice
             ]);
+    }
+    public function getCheckout(){
+   
+        if(!Session::has('cart')){
+            return view('/menu.ordercart');
+            }
+        $oldCart = Session::get('cart');
+        $cart = new Meal($oldCart);
+        $total = $cart->totalPrice;
+        return view('checkout', [
+            'total' => $total,
+            'orders' => $cart->items,
+        ]);
+    }
+    public function postCheckout(Request $request){
+        if(!Session::has('cart')){
+            return view('/menu.ordercart');
+        }
+       
+        $oldCart = Session::get('cart');
+          
+        $cart = new Meal($oldCart); 
+        $cart -> cart = serialize($cart);
+        $cart -> delivery = $request->input('address');
+        $cart -> name = $request->input('name');
+        $cart -> tel = $request->input('tel');
+   
 
+        $order = new Order();
+        $order->cart = $cart -> cart;
+        $order -> delivery  = $cart -> delivery;
+        $order->name =  $cart -> name;
+        $order-> tel = $cart -> tel;
+        $order-> payment = 0;
+        $order-> finalized = 0;
+        $order -> save();
+
+
+        Session::forget('cart');
+        return redirect('/menu')->with('mssg', 'We received your order');
     }
 }
