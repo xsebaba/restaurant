@@ -5,8 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-sm-3">
             <div class="card">
-                <a href="/" style="text-decoration: none; color:#232">
-                <div class="card-body" style="text-align:center;">
+                <a href="/menu" style="text-decoration: none; color:#232"> 
+                <div class="card-body" style="text-align:center; box-shadow: 5px 5px 10px -3px grey;">Click to check a menu <br>
                     @if (session('status'))
                         <div class="alert alert-warning" role="alert">
                             {{ session('status') }}

@@ -20,7 +20,7 @@ return new class extends Migration
                 $table->string('name_item');
                 $table->string('ingredients');
                 $table->float('price', 7,2);
-                $table->string('imagepath');
+                $table->string('imagepath')->nullable;
                 $table->timestamps();
     
         });

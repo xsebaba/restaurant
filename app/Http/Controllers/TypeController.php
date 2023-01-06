@@ -27,7 +27,7 @@ class TypeController extends Controller
      */
     public function create()
     {
-        return view('menu.typecreate');
+        return view('menu.createtype');
     }
 
     /**
@@ -41,18 +41,14 @@ class TypeController extends Controller
         $types= new Type;
         $types->typename = request('typename');
         $types->save();
-        return redirect('/menu')->with('mssg', 'Dodano element do menu');
+        return redirect('/admin')->with('mssg', 'Dodano element do menu');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\type  $type
-     * @return \Illuminate\Http\Response
-     */
-    public function show(type $type)
+    public function indexTypes(type $type)
     {
-        //
+        $types = Type::all();
+        return view('menu.indextypes',
+        compact('types'));
     }
 
     /**
@@ -63,8 +59,8 @@ class TypeController extends Controller
      */
     public function edit($id)
     {
-        $types = Type::findOrFail($id);
-        return view('menu.typeedit', compact('types'));
+        $type = Type::findOrFail($id);
+        return view('menu.edittype', compact('type'));
     }
 
     /**
@@ -74,25 +70,25 @@ class TypeController extends Controller
      * @param  \App\Models\type  $type
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, type $type)
+    public function update(Request $request, $id)
     {
-        $types= Type::findOrFail($id);
-        $types->typename = request('typename');
-        $types->save();
-        return redirect('/menu')->with('mssg', 'Zaktualizowano element');
+        $type= Type::findOrFail($id);
+        $type->typename = $request->input('typename');
+        $type->save();
+        return redirect('/types')->with('mssg', 'Zaktualizowano element');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\type  $type
-     * @return \Illuminate\Http\Response
-     */
+    public function preDelete($id)
+    {
+        $type = Type::findOrFail($id);
+        return view('menu.deletetypes', compact('type'));
+
+    }
     public function destroy($id)
     {
         $types= Type::findOrFail($id);
         $types->delete();
     
-        return redirect('/menu');
+        return redirect('/types');
     }
 }

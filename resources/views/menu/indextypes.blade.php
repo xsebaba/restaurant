@@ -12,29 +12,38 @@
         @endif
         
             @foreach($types as $type)
-            <!-- Display only objects/menu types which are not empty --> 
-                @if($type->menu->count())
+            
+
                 <div class="row" style="margin-top: 24px;">
-                    <div style="margin-bottom: 24px;">
-        
-                        <h2>{{strtoupper($type->typename)}}</h2>
-                        
+                    <div class="row">
+                        <div class="col-3">
+                            <h2>{{strtoupper($type->typename)}}</h2> 
+                        </div>
+                        <div class="col-1">
+                            <a style="text-decoration: none;" href="/types/edit/{{$type->id}}">
+                                <h2> Edit</h2> 
+                            </a>
+                        </div>
+                        <div class="col-1">
+                            <a style="text-decoration: none;" href="/types/delete/{{$type->id}}">
+                                <h2> Delete</h2> 
+                            </a>
+                        </div>
+                       
                     </div>
                 @foreach($type->menu as $item)
-                <div class="col-xl-3 col-lg-4 col-sm-6">
-                    <div class="card" style="width: 16rem; margin-bottom:12px; margin-right:6px; box-shadow: 4px 4px 20px -5px grey;">
-                        <img src="{{asset('/storage/' . $item->imagepath)}}" class="card-img-top" alt="Picture of a meal">
+                <div class="col-xl-2 col-lg-3 col-sm-4">
+                    <div class="card" style="width: 12rem; margin-bottom:12px; margin-right:6px; box-shadow: 2px 2px 3px -2px grey;">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{$item->name_item}}</h5>
-                            <p class="card-text">{{$item->ingredients}}</p>
                             <p class="card-text">Price: {{$item->price}} USD</p>
-                            <a href="/order/{{$item->id}}" class="btn btn-info" style="box-shadow: 2px 2px 10px -5px #00004d;">Order</a>
+                        
                         </div>
                     </div>
                 </div>
                 @endforeach
                 </div>
-                @endif
+            
                 
             @endforeach
 

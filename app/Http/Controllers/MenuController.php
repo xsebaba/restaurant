@@ -12,11 +12,13 @@ use Session;
 
 class MenuController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    public function adminPanel()
+    {
+        $menus = Menu::orderBy('type_id')->get();
+        return view('admin', compact('menus'));
+    }
+    
     public function index()
     {
         // Displaying menu items is in TypeController to dive items into groups like drinks, starters etc.
@@ -29,23 +31,31 @@ class MenuController extends Controller
      */
     public function create()
     {
-        return view('menu.create');
+        $types = Type::get();
+        return view('menu.create', compact('types'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        $menu= new Menu;
-        $menu->name_item = request('name_item');
-        $menu->ingredients = request('ingredients');
-        $menu->price = request('price');
+        /*
+        $request->validate([
+            'name_item' => 'required|min:3|max:255',
+            'type_id'=> 'required',
+            'ingredients' => 'nullable|min:3|max:255',
+            'price' => 'required',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
+        ]);
+       
+        */
+       
+        $menu = new Menu($request->all());
+        if($request->hasFile('image')){
+            $menu->imagepath = $request->file('image')->store('img');
+        }
+        
         $menu->save();
-        return redirect('/menu')->with('mssg', 'Dodano element do menu');
+        return redirect('/menu');
     }
 
     /**
@@ -71,23 +81,18 @@ class MenuController extends Controller
         return view('/menu.edit', compact('menu'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\menu  $menu
-     * @return \Illuminate\Http\Response
-     */
-    public function update($id)
+    public function update(Request $request, $id)
     {
         $menu= Menu::findOrFail($id);
-
-        $menu->name_item = request('name_item');
-        $menu->ingredients = request('ingredients');
-        $menu->price = request('price');
+        if($request->hasfile('image')){
+            $menu->imagepath = $request->file('image')->store('img');
+        }
+        $menu->name_item = $request->input('name_item');
+        $menu->ingredients = $request->input('ingredients');
+        $menu->price = $request->input('price');
         $menu->update();
 
-    return redirect('/menu')->with('mssg', 'Zaktualizowano element');
+    return redirect('/menu')->with('mssg', 'The selected element is updated');
     }
 
     /**
@@ -96,7 +101,13 @@ class MenuController extends Controller
      * @param  \App\Models\menu  $menu
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    
+     public function preDelete($id)
+     {
+         $menu = Menu::findOrFail($id);
+         return view('/menu.delete', compact('menu'));
+     }
+     public function destroy($id)
     {
         $menu= Menu::findOrFail($id);
         $menu->delete();
@@ -166,4 +177,5 @@ class MenuController extends Controller
         Session::forget('cart');
         return redirect('/menu')->with('mssg', 'We received your order');
     }
+
 }
